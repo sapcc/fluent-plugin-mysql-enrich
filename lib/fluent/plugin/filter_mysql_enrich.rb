@@ -11,6 +11,7 @@ module Fluent
     config_param :sql_key, :string
 
     config_param :record_key, :string
+    config_param :record_mapping, :hash, default: {}, symbolize_keys: true, value_type: :string
 
     config_param :host, :string
     config_param :port, :integer, :default => 3306
@@ -84,7 +85,11 @@ module Fluent
       return record if row.nil? || @columns.nil?
       
       @columns.each do |col|
-        record[col] = row[col]
+        if record_mapping.key?[col.to_sym]
+          record[record_mapping.[col.to_sym]] = row[col]
+        else
+          record[col] = row[col]
+        end
       end
     
       return record
