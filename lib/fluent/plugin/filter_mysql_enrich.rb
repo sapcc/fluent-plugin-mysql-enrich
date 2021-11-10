@@ -86,7 +86,8 @@ module Fluent
       
       @columns.each do |col|
         if @record_mapping.key?[col.to_sym]
-          record[@record_mapping.[col.to_sym]] = row[col]
+          mapkey = @record_mapping[col.to_sym]
+          record[mapkey] = row[col]
         else
           record[col] = row[col]
         end
