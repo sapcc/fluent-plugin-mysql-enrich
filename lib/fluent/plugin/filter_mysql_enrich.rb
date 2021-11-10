@@ -85,9 +85,10 @@ module Fluent
       return record if row.nil? || @columns.nil?
       
       @columns.each do |col|
-        if @record_mapping.key?[col.to_sym]
-          mapkey = @record_mapping[col.to_sym]
-          record[mapkey] = row[col]
+        if @record_mapping.key?(col.to_sym)
+          fieldname = @record_mapping[col.to_sym]
+          log.debug "Old #{col}; New #{fieldname}"
+          record[fieldname] = row[col]
         else
           record[col] = row[col]
         end
