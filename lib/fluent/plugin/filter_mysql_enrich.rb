@@ -128,7 +128,13 @@ module Fluent
         log.warn "Only select statements are supported: #{@sql}"
       end
 
-      results = handler.query("#{@sql}")
+      results = nil
+      begin
+        results = handler.query("#{@sql}")
+      rescue Mysql2::Error
+        log.warn("failed to refresh cache: could not read from DB...")
+        return
+      end
       if results.size() == 0
         log.warn("No results from enrichment db") 
         return
@@ -145,7 +151,7 @@ module Fluent
       end
       handler.close
       @cache = temp
-      log.info "Cache contains #{@cache.size} entries after loading"
+      log.info "Cache contains #{@cache.size} entries after refresh"
     end
   end
 end
