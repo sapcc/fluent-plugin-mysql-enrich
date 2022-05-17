@@ -21,7 +21,8 @@ module Fluent
 
     config_param :columns, :array, value_type: :string
 
-    config_param :refresh_interval, :integer, :default => 60 
+    config_param :refresh_interval, :integer, :default => 600
+    config_param :read_timeout, :integer, :default => 60
 
     helpers :timer
 
@@ -83,7 +84,7 @@ module Fluent
       row = hash_get(@cache, key)
       log.debug "Entry in cache used to enrich: #{row}"
       return record if row.nil? || @columns.nil?
-      
+
       @columns.each do |col|
         if @record_mapping.key?(col.to_sym)
           fieldname = @record_mapping[col.to_sym]
@@ -93,7 +94,7 @@ module Fluent
           record[col] = row[col]
         end
       end
-    
+
       return record
     end
 
@@ -112,9 +113,10 @@ module Fluent
           :host => @host, :port => @port,
           :username => @username, :password => @password,
           :database => @database,
+          :read_timeout => @read_timeout,
       })
-    end 
-    
+    end
+
     def refresh_cache
       log.info "Refreshing cache..."
       temp = Hash.new
@@ -136,7 +138,7 @@ module Fluent
         return
       end
       if results.size() == 0
-        log.warn("No results from enrichment db") 
+        log.warn("No results from enrichment db")
         return
       end
       log.debug "Caching #{results.count} entries..."

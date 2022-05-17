@@ -32,6 +32,7 @@ gem install fluent-plugin-mysql_enrich
   record_key remote_addr
   columns project_id, port_id
   refresh_interval 60
+  read_timeout 60
 </filter>
 ```
 
@@ -97,6 +98,10 @@ record after filter
 * refresh_interval
 
   The interval in seconds in which the local cache is refreshed. Default are 60 seconds.
+
+* read_timeout
+
+  Set read timeout in seconds for MySQL Connection, defaults to 60s
 
 ## Copyright
 
